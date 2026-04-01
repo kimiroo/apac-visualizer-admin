@@ -1,4 +1,4 @@
-color_list = [
+MARKER_COLOR_LIST = [
     'beige',
     'black',
     'blue',
