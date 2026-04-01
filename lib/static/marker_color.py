@@ -1,0 +1,21 @@
+color_list = [
+    'beige',
+    'black',
+    'blue',
+    'cadetblue',
+    'darkblue',
+    'darkgreen',
+    'darkpurple',
+    'darkred',
+    'gray',
+    'green',
+    'lightblue',
+    'lightgray',
+    'lightgreen',
+    'lightred',
+    'orange',
+    'pink',
+    'purple',
+    'red',
+    'white'
+]
