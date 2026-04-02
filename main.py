@@ -9,6 +9,7 @@ from const.file_path import *
 from const.marker_color import MARKER_COLOR_LIST
 from util.gen_template import gen_template
 from util.auto_download import auto_download
+from util.auto_refresh import auto_refresh
 
 
 ############
@@ -60,17 +61,16 @@ if os.path.exists(PATH_EXCEL):
     st.html(f'''
     <style>
         .label {{
-            color: #666;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 400;
         }}
         .data {{
             font-size: 1rem;
             font-weight: 700;
-            padding-left: .5rem;
+            padding-left: .3rem;
         }}
     </style>
-    <span class="label">Last Modified Time:</span>
+    <span class="label">Upload Time:</span>
     <span class="data">{mtime_config_datetime.strftime('%Y-%m-%d %H:%M:%S')}</span>
     ''')
 
@@ -85,12 +85,14 @@ if os.path.exists(PATH_EXCEL):
             pass
 
     with col2:
-        if st.button(
+        st.download_button(
             'Download Data',
+            data=open(PATH_EXCEL, 'rb').read(),
+            file_name='data.xlsx',
+            mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             key='btn_download_current',
             use_container_width=True
-        ):
-            pass
+        )
 
     with col3:
         if st.button(
@@ -98,7 +100,8 @@ if os.path.exists(PATH_EXCEL):
             key='btn_delete_current',
             use_container_width=True
         ):
-            pass
+            os.remove(PATH_EXCEL)
+            st.rerun()
 
 else:
     st.text('No dataset')
@@ -108,11 +111,22 @@ st.write('#### New Dataset')
 uploaded_dataset = st.file_uploader(
     'Upload',
     type='xlsx',
-    key='uploaded_dataset',
+    key='uploader_dataset',
     accept_multiple_files=False
 )
 
 if uploaded_dataset is not None:
+
+    # Read file as bytes
+    bytes_data = uploaded_dataset.getvalue()
+
+    temp_excel_path = '/tmp/data.temp.xlsx' if IS_CONTAINER else BASE_PATH / 'data.temp.xlsx'
+
+    if os.path.exists(temp_excel_path):
+        os.remove(temp_excel_path)
+
+    with open(temp_excel_path, 'wb') as f:
+        f.write(bytes_data)
 
     col1, col2, _ = st.columns([1, 1, 2])
 
@@ -130,10 +144,8 @@ if uploaded_dataset is not None:
             key='btn_apply_new',
             use_container_width=True
         ):
-            pass
-
-    # To read file as bytes:
-    bytes_data = uploaded_dataset.getvalue()
+            shutil.move(temp_excel_path, PATH_EXCEL)
+            auto_refresh()
 
 
 ##############
@@ -239,23 +251,43 @@ st.write('#### App Icon')
 
 if os.path.exists(PATH_ICON):
 
+    st.text('Current Icon:')
+
+    st.image(
+        PATH_ICON,
+        width=100
+    )
+
     col1, _ = st.columns([1, 3])
 
-    if st.button(
-        'Delete Icon',
-        key='btn_delete_icon',
-        use_container_width=True
-    ):
-        pass
+    with col1:
+        if st.button(
+            'Delete Icon',
+            key='btn_delete_icon',
+            use_container_width=True
+        ):
+            os.remove(PATH_ICON)
+            st.rerun()
 
 uploaded_icon = st.file_uploader(
     'Upload',
     type='png',
-    key='uploaded_icon',
+    key='uploader_icon',
     accept_multiple_files=False,
 )
 
 if uploaded_icon is not None:
+
+    # Read file as bytes
+    bytes_data = uploaded_icon.getvalue()
+
+    temp_icon_path = '/tmp/icon.temp.png' if IS_CONTAINER else BASE_PATH / 'icon.temp.png'
+
+    if os.path.exists(temp_icon_path):
+        os.remove(temp_icon_path)
+
+    with open(temp_icon_path, 'wb') as f:
+        f.write(bytes_data)
 
     col1, _ = st.columns([1, 3])
 
@@ -265,10 +297,8 @@ if uploaded_icon is not None:
             key='btn_apply_icon',
             use_container_width=True
         ):
-            pass
-
-    # To read file as bytes:
-    bytes_data = uploaded_icon.getvalue()
+            shutil.move(temp_icon_path, PATH_ICON)
+            auto_refresh()
 
 st.write('#### Edit List')
 
