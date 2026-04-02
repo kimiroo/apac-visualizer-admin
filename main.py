@@ -157,7 +157,7 @@ st.header('Manage Config')
 input_app_name = st.text_input(
     'App Name',
     key='input_app_name',
-    value=None
+    value=config['app']['title']
 )
 
 st.write('#### Sheet Names')
@@ -165,31 +165,31 @@ st.write('#### Sheet Names')
 input_sheet_name_region = st.text_input(
     'Region Sheet Name',
     key='input_sheet_name_region',
-    value=None
+    value=config['source']['sheet']['region']['name']
 )
 
 input_sheet_name_dealer = st.text_input(
     'Dealer Sheet Name',
     key='input_sheet_name_dealer',
-    value=None
+    value=config['source']['sheet']['dealer']['name']
 )
 
 input_sheet_name_dealer_customer = st.text_input(
     'Dealer Customer Sheet Name',
     key='input_sheet_name_dealer_customer',
-    value=None
+    value=config['source']['sheet']['dealerCustomer']['name']
 )
 
 input_sheet_name_key_account = st.text_input(
     'Key Account Sheet Name',
     key='input_sheet_name_key_account',
-    value=None
+    value=config['source']['sheet']['keyAccount']['name']
 )
 
 input_sheet_name_priority_target = st.text_input(
     'Priority Target Name',
     key='input_sheet_name_priority_target',
-    value=None
+    value=config['source']['sheet']['priorityTarget']['name']
 )
 
 st.write('#### Optional Data Display')
@@ -201,30 +201,40 @@ is_show_projected_revenue = st.selectbox(
         {'name': 'Show', 'value': True},
         {'name': 'Hide', 'value': False}
     ],
-    format_func=lambda x: x['name']
+    format_func=lambda x: x['name'],
+    index=(0 if config['showOptionalData']['projectedRevenue'] else 1)
 )
 
 st.write('#### Pin Colors')
+
+current_color_priority_target_customer = 'beige'
+current_color_priority_target_non_customer = 'beige'
+
+for item in config['isCustomer']:
+    if item['value']:
+        current_color_priority_target_customer = item['color']
+    else:
+        current_color_priority_target_non_customer = item['color']
 
 pin_color_priority_target_customer = st.selectbox(
     'Customer (Priority Target)',
     key='pin_color_priority_target_customer',
     options=MARKER_COLOR_LIST,
-    index=0
+    index=MARKER_COLOR_LIST.index(current_color_priority_target_customer)
 )
 
 pin_color_priority_target_non_customer = st.selectbox(
     'Non-Customer (Priority Target)',
     key='pin_color_priority_target_non_customer',
     options=MARKER_COLOR_LIST,
-    index=0
+    index=MARKER_COLOR_LIST.index(current_color_priority_target_non_customer)
 )
 
 pin_color_key_account = st.selectbox(
     'Key Account',
     key='pin_color_key_account',
     options=MARKER_COLOR_LIST,
-    index=0
+    index=MARKER_COLOR_LIST.index(config['keyAccountColor'])
 )
 
 st.write('#### Miscellaneous')
@@ -232,7 +242,7 @@ st.write('#### Miscellaneous')
 input_app_note = st.text_area(
     'App Note',
     key='input_app_note',
-    value=None,
+    value=config['appMemo'],
 )
 
 col1, _ = st.columns([1, 3])
@@ -243,7 +253,34 @@ with col1:
         key='btn_apply_config',
         use_container_width=True
     ):
-        pass
+        # App Name
+        config['app']['title'] = input_app_name
+
+        # Sheet Names
+        config['source']['sheet']['region']['name'] = input_sheet_name_region
+        config['source']['sheet']['dealer']['name'] = input_sheet_name_dealer
+        config['source']['sheet']['dealerCustomer']['name'] = input_sheet_name_dealer_customer
+        config['source']['sheet']['keyAccount']['name'] = input_sheet_name_key_account
+        config['source']['sheet']['priorityTarget']['name'] = input_sheet_name_priority_target
+
+        # Optional Data Display
+        config['showOptionalData']['projectedRevenue'] = is_show_projected_revenue['value']
+
+        # Pin Colors
+        config['isCustomer'] = [
+            {'value': True, 'color': pin_color_priority_target_customer},
+            {'value': False, 'color': pin_color_priority_target_non_customer}
+        ]
+        config['keyAccountColor'] = pin_color_key_account
+
+        # Miscellaneous
+        config['appMemo'] = input_app_note
+
+        config_json = json.dumps(config, ensure_ascii=False)
+
+        with open(PATH_CONFIG, 'w', encoding='utf-8') as f:
+            f.write(config_json)
+            auto_refresh()
 
 st.divider()
 
