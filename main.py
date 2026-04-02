@@ -1,18 +1,32 @@
 import os
 import json
+import shutil
 from datetime import datetime
 
 import streamlit as st
 
 from const.file_path import *
 from const.marker_color import MARKER_COLOR_LIST
+from util.gen_template import gen_template
+from util.auto_download import auto_download
+
+
+############
+### Init ###
+############
+
+if not os.path.exists(PATH_CONFIG):
+    shutil.copy2(PATH_CONFIG_DEFAULT, PATH_CONFIG)
+
+with open(PATH_CONFIG, 'r', encoding='utf-8') as f:
+    config = json.load(f)
 
 
 st.title('Admin Console')
 
 st.set_page_config(
     page_title='Admin Console',
-    page_icon=None
+    page_icon=PATH_ICON if os.path.exists(PATH_ICON) else PATH_ICON_DEFAULT
 )
 
 
@@ -32,7 +46,9 @@ with col1:
         key='btn_download_template',
         use_container_width=True
     ):
-        pass
+        filetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        base64_string = gen_template(config)
+        auto_download(base64_string, 'template.xlsx', filetype)
 
 st.write('#### Current Dataset')
 
