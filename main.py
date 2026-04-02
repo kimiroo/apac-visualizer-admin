@@ -1,5 +1,6 @@
 import os
 import json
+import uuid
 import shutil
 from datetime import datetime
 
@@ -21,6 +22,41 @@ if not os.path.exists(PATH_CONFIG):
 
 with open(PATH_CONFIG, 'r', encoding='utf-8') as f:
     config = json.load(f)
+
+# Load vertical list from config
+if 'vertical_items' not in st.session_state:
+    st.session_state.vertical_items = [
+        {'name': item, 'id': str(uuid.uuid4())}
+        for item in config.get('vertical', [])
+    ]
+
+# Load tier list from config
+if 'tier_items' not in st.session_state:
+    st.session_state.tier_items = [
+        {**item, 'id': str(uuid.uuid4())}
+        for item in config.get('tiers', [])
+    ]
+
+def add_item(target_list):
+    if target_list == 'vertical':
+        st.session_state.vertical_items.append({
+            'name': 'New Vertical', 'id': str(uuid.uuid4())
+        })
+    elif target_list == 'tier':
+        st.session_state.tier_items.append({
+            'name': 'New Tier', 'color': 'beige', 'id': str(uuid.uuid4())
+        })
+
+def delete_item(target_list, target_id):
+    if target_list == 'vertical':
+        st.session_state.vertical_items = [
+            item for item in st.session_state.vertical_items if item['id'] != target_id
+        ]
+    elif target_list == 'tier':
+        st.session_state.tier_items = [
+            item for item in st.session_state.tier_items if item['id'] != target_id
+        ]
+        print(st.session_state.tier_items)
 
 
 st.title('Admin Console')
@@ -205,6 +241,99 @@ is_show_projected_revenue = st.selectbox(
     index=(0 if config['showOptionalData']['projectedRevenue'] else 1)
 )
 
+st.write('#### Vertical List')
+
+col1, col2 = st.columns([7, 1])
+
+for idx, vertical in enumerate(st.session_state.vertical_items):
+
+    with col1:
+        vertical['name'] = st.text_input(
+            'Vertical Name',
+            key=f'input_vertical_name_{vertical['id']}',
+            value=vertical['name'],
+            label_visibility='collapsed' if idx > 0 else 'visible'
+        )
+
+    with col2:
+        if idx == 0:
+            st.html('''
+                <style>
+                    .pad {
+                        padding-top: 12px;
+                        visibility: hidden;
+                    }
+                </style>
+                <div class="pad"></div>
+            ''')
+
+        st.button(
+            'Delete',
+            key=f'btn_vertical_delete_{vertical['id']}',
+            on_click=delete_item,
+            args=('vertical', vertical['id']),
+            use_container_width=True
+        )
+
+st.button(
+    'Add New Vertical',
+    key='btn_vertical_add',
+    on_click=add_item,
+    args=('vertical',),
+    use_container_width=True
+)
+
+st.write('#### Tier List')
+
+col1, col2, col3 = st.columns([4, 3, 1])
+
+for idx, tier in enumerate(st.session_state.tier_items):
+
+    with col1:
+        tier['name'] = st.text_input(
+            'Tier Name',
+            key=f'input_tier_name_{tier['id']}',
+            value=tier['name'],
+            label_visibility='collapsed' if idx > 0 else 'visible'
+        )
+
+    with col2:
+        tier['color'] = st.selectbox(
+            'Pin Color',
+            key=f'select_tier_color_{tier['id']}',
+            options=MARKER_COLOR_LIST,
+            index=MARKER_COLOR_LIST.index(tier['color']) \
+                if tier['color'] in MARKER_COLOR_LIST else 0,
+            label_visibility='collapsed' if idx > 0 else 'visible'
+        )
+
+    with col3:
+        if idx == 0:
+            st.html('''
+                <style>
+                    .pad {
+                        padding-top: 12px;
+                        visibility: hidden;
+                    }
+                </style>
+                <div class="pad"></div>
+            ''')
+
+        st.button(
+            'Delete',
+            key=f'btn_tier_delete_{tier['id']}',
+            on_click=delete_item,
+            args=('tier', tier['id'])
+        )
+
+st.button(
+    'Add New Tier',
+    key='btn_tier_add',
+    on_click=add_item,
+    args=('tier',),
+    use_container_width=True
+)
+
 st.write('#### Pin Colors')
 
 current_color_priority_target_customer = 'beige'
@@ -268,6 +397,25 @@ with col1:
 
         # Optional Data Display
         config['showOptionalData']['projectedRevenue'] = is_show_projected_revenue['value']
+
+        # Vertical List
+        vertical_list = []
+
+        for item in st.session_state.vertical_items:
+            vertical_list.append(item['name'])
+
+        config['vertical'] = vertical_list
+
+        # Tier List
+        tier_list = []
+
+        for item in st.session_state.tier_items:
+            tier_list.append({
+                'name': item['name'],
+                'color': item['color']
+            })
+
+        config['tiers'] = tier_list
 
         # Pin Colors
         config['isCustomer'] = [
@@ -339,23 +487,3 @@ if uploaded_icon is not None:
         ):
             shutil.move(temp_icon_path, PATH_ICON)
             auto_refresh()
-
-st.write('#### Edit List')
-
-col1, col2, _ = st.columns([1, 1, 2])
-
-with col1:
-    if st.button(
-        'Edit Vertical List',
-        key='btn_edit_vertical',
-        use_container_width=True
-    ):
-        pass
-
-with col2:
-    if st.button(
-        'Edit Tier List',
-        key='btn_edit_tier',
-        use_container_width=True
-    ):
-        pass
