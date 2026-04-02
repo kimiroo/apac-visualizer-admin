@@ -220,21 +220,24 @@ pin_color_priority_target_customer = st.selectbox(
     'Customer (Priority Target)',
     key='pin_color_priority_target_customer',
     options=MARKER_COLOR_LIST,
-    index=MARKER_COLOR_LIST.index(current_color_priority_target_customer)
+    index=MARKER_COLOR_LIST.index(current_color_priority_target_customer) \
+        if current_color_priority_target_customer in MARKER_COLOR_LIST else 0
 )
 
 pin_color_priority_target_non_customer = st.selectbox(
     'Non-Customer (Priority Target)',
     key='pin_color_priority_target_non_customer',
     options=MARKER_COLOR_LIST,
-    index=MARKER_COLOR_LIST.index(current_color_priority_target_non_customer)
+    index=MARKER_COLOR_LIST.index(current_color_priority_target_non_customer) \
+        if current_color_priority_target_non_customer in MARKER_COLOR_LIST else 0
 )
 
 pin_color_key_account = st.selectbox(
     'Key Account',
     key='pin_color_key_account',
     options=MARKER_COLOR_LIST,
-    index=MARKER_COLOR_LIST.index(config['keyAccountColor'])
+    index=MARKER_COLOR_LIST.index(config['keyAccountColor']) \
+        if config['keyAccountColor'] in MARKER_COLOR_LIST else 0
 )
 
 st.write('#### Miscellaneous')
