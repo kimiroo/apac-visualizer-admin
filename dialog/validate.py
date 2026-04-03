@@ -20,9 +20,8 @@ def dialog_validate(doc: _WorksheetOrChartsheetLike, config: dict):
         st.dataframe(
             df,
             key='table_validation_error',
-            use_container_width=True,
             hide_index=True,
-            width='content',
+            width='stretch',
             height='auto',
             column_config={
                 'level': st.column_config.TextColumn('Error Level'),
