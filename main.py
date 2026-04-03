@@ -11,6 +11,7 @@ from const.marker_color import MARKER_COLOR_LIST
 from util.gen_template import gen_template
 from util.auto_download import auto_download
 from util.auto_refresh import auto_refresh
+from dialog.geojson import dialog_geojson
 
 
 ############
@@ -56,7 +57,6 @@ def delete_item(target_list, target_id):
         st.session_state.tier_items = [
             item for item in st.session_state.tier_items if item['id'] != target_id
         ]
-        print(st.session_state.tier_items)
 
 
 st.title('Admin Console')
@@ -487,3 +487,14 @@ if uploaded_icon is not None:
         ):
             shutil.move(temp_icon_path, PATH_ICON)
             auto_refresh()
+
+st.divider()
+
+st.write('#### GeoJSON')
+
+if st.button(
+    'Download latest GeoJSON',
+    key='btn_apply_icon',
+    use_container_width=True
+):
+    dialog_geojson()
