@@ -383,6 +383,12 @@ input_app_note = st.text_area(
     value=config['appMemo'],
 )
 
+input_glossary = st.text_area(
+    'App Note',
+    key='input_glossary',
+    value=config['glossary'],
+)
+
 col1, _ = st.columns([1, 3])
 
 with col1:
