@@ -3,6 +3,7 @@ from openpyxl import Workbook
 from util.validate.region import check_region_sheet
 from util.validate.dealer import check_dealer_sheet
 from util.validate.dealer_customer import check_dealer_customer_sheet
+from util.validate.key_account import check_key_account_sheet
 
 def validate_data(doc:Workbook, config: dict) -> list:
 
@@ -66,5 +67,22 @@ def validate_data(doc:Workbook, config: dict) -> list:
         sheet = doc[sheet_name]
         result_dealer_customer = check_dealer_customer_sheet(sheet, config)
         error_list = error_list + result_dealer_customer
+
+    #######################
+    ### Key Account ###
+    #######################
+
+    sheet_name = config['source']['sheet']['keyAccount']['name']
+    if not sheet_name in doc.sheetnames:
+        error_list.append({
+            'level': 'CRITICAL',
+            'sheet': '-',
+            'cell': '-',
+            'message': f'Required sheet "{sheet_name}" not found in the workbook. Ensure the sheet name matches the configuration.'
+        })
+    else:
+        sheet = doc[sheet_name]
+        result_key_account = check_key_account_sheet(sheet, config)
+        error_list = error_list + result_key_account
 
     return error_list
