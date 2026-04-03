@@ -21,6 +21,8 @@ VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+ENV IS_CONTAINER=true
+
 EXPOSE 8501
 
 HEALTHCHECK --interval=30s --timeout=3s \
