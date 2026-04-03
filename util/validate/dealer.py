@@ -55,7 +55,7 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
     ### Data check
     tier_list = [obj['name'] for obj in config['tiers']]
 
-    for row in sheet.iter_rows(3):
+    for row in sheet.iter_rows(2):
 
         if row[3].value is None:
             error_list.append({
