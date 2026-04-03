@@ -67,7 +67,7 @@ def check_dealer_customer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict)
 
         try:
             row[4].value.date()
-        except (ValueError, TypeError):
+        except AttributeError:
             error_list.append({
                 'level': 'CRITICAL',
                 'sheet': sheet.title,

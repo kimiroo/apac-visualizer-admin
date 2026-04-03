@@ -4,12 +4,33 @@ if TYPE_CHECKING:
     from openpyxl.workbook.workbook import _WorksheetOrChartsheetLike
 
 import streamlit as st
+import pandas as pd
 
 from const.file_path import *
 from util.validate_data import validate_data
 
-@st.dialog('Data Validation')
+@st.dialog('Data Validation', width='large')
 def dialog_validate(doc: _WorksheetOrChartsheetLike, config: dict):
-    result = validate_data(doc, config)
 
-    print(result)
+    with st.spinner('Validating spreadsheet data...'):
+        result = validate_data(doc, config)
+        df = pd.DataFrame(result)
+
+    if not df.empty:
+        st.dataframe(
+            df,
+            key='table_validation_error',
+            use_container_width=True,
+            hide_index=True,
+            width='content',
+            height='auto',
+            column_config={
+                'level': st.column_config.TextColumn('Error Level'),
+                'sheet': st.column_config.TextColumn('Sheet Name'),
+                'cell': st.column_config.TextColumn('Cell'),
+                'message': st.column_config.TextColumn('Error Message', width=1600)
+            }
+        )
+
+    else:
+        st.success('Validation complete. All records passed the consistency check.')
