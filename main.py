@@ -385,7 +385,7 @@ input_app_note = st.text_area(
 )
 
 input_glossary = st.text_area(
-    'App Note',
+    'Glossary',
     key='input_glossary',
     value=config['glossary'],
 )
@@ -439,6 +439,7 @@ with col1:
 
         # Miscellaneous
         config['appMemo'] = input_app_note
+        config['glossary'] = input_glossary
 
         config_json = json.dumps(config, ensure_ascii=False)
 
