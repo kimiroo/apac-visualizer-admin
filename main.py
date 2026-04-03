@@ -2,7 +2,7 @@ import os
 import json
 import uuid
 import shutil
-from datetime import datetime
+from datetime import datetime, UTC
 
 import streamlit as st
 import openpyxl
@@ -94,7 +94,7 @@ st.write('#### Current Dataset')
 if os.path.exists(PATH_EXCEL):
 
     mtime_excel_float = os.path.getmtime(PATH_EXCEL)
-    mtime_config_datetime = datetime.fromtimestamp(mtime_excel_float)
+    mtime_config_datetime = datetime.fromtimestamp(mtime_excel_float, tz=UTC)
 
     st.html(f'''
     <style>
@@ -109,7 +109,7 @@ if os.path.exists(PATH_EXCEL):
         }}
     </style>
     <span class="label">Upload Time:</span>
-    <span class="data">{mtime_config_datetime.strftime('%Y-%m-%d %H:%M:%S')}</span>
+    <span class="data">{mtime_config_datetime.strftime('%Y-%m-%d %H:%M:%S')} (UTC)</span>
     ''')
 
     col1, col2, col3, _ = st.columns([1, 1, 1, 1])
