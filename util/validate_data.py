@@ -1,6 +1,7 @@
 from openpyxl import Workbook
 
 from util.validate.region import check_region_sheet
+from util.validate.dealer import check_dealer_sheet
 
 def validate_data(doc:Workbook, config: dict) -> list:
 
@@ -30,6 +31,25 @@ def validate_data(doc:Workbook, config: dict) -> list:
         sheet = doc[sheet_name]
 
         result_region = check_region_sheet(sheet, config)
+
+        error_list = error_list + result_region
+
+    ##############
+    ### Dealer ###
+    ##############
+
+    sheet_name = config['source']['sheet']['dealer']['name']
+    if not sheet_name in doc.sheetnames:
+        error_list.append({
+            'level': 'CRITICAL',
+            'sheet': '-',
+            'cell': '-',
+            'message': f'Required sheet "{sheet_name}" not found in the workbook. Ensure the sheet name matches the configuration.'
+        })
+    else:
+        sheet = doc[sheet_name]
+
+        result_region = check_dealer_sheet(sheet, config)
 
         error_list = error_list + result_region
 

@@ -74,6 +74,17 @@ def check_region_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
                 'message': f'Required column "{vertical}" could not be found in the sheet headers.'
             })
 
+        else:
+            for idx, header in enumerate(['Plant Count', 'Projected Dealer Revenue', 'Potential Market Value', 'Total Market Value']):
+                cell = sheet.cell(row=2, column=(header_idx + idx + 1))
+                if cell.value != header:
+                    error_list.append({
+                        'level': 'WARNING',
+                        'sheet': sheet.title,
+                        'cell': cell.coordinate,
+                        'message': f'Unexpected header value. Subsequent data may be invalid. (Found: {f'"{cell.value}"' if cell.value else 'None'}, Expected: "{header}")'
+                    })
+
     ### Data check
     for row in sheet.iter_rows(3):
         for idx in range(2):
