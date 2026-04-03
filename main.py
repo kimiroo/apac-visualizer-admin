@@ -152,7 +152,8 @@ uploaded_dataset = st.file_uploader(
     'Upload',
     type='xlsx',
     key='uploader_dataset',
-    accept_multiple_files=False
+    accept_multiple_files=False,
+    max_upload_size=20
 )
 
 if uploaded_dataset is not None:
@@ -474,6 +475,7 @@ uploaded_icon = st.file_uploader(
     type='png',
     key='uploader_icon',
     accept_multiple_files=False,
+    max_upload_size=1
 )
 
 if uploaded_icon is not None:
