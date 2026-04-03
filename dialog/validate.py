@@ -32,5 +32,12 @@ def dialog_validate(doc: _WorksheetOrChartsheetLike, config: dict):
             }
         )
 
+        with st.expander("📝 Data Validation Legend", expanded=True):
+            st.markdown("""
+            - **🚫 CRITICAL**: Validation failed. The app **will fail to run** with these errors.
+            - **❌ ERROR**: Data mapping issues. Some records **might be missing or incomplete**.
+            - **⚠️ WARNING**: Minor inconsistencies detected. These will be **auto-corrected** or ignored.
+            """)
+
     else:
         st.success('Validation complete. All records passed the consistency check.')
