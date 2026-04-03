@@ -6,7 +6,12 @@ if TYPE_CHECKING:
 def check_dealer_customer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
     error_list = [] # {'level': level, 'sheet': sheet, 'cell': cell, 'message': message}
 
-    expected_max_col_cnt = 6
+    header_list = [
+        'Dealer ID', 'Dealer Name', 'Name',
+        'Sale Value', 'Sale Date', 'Sale Model'
+    ]
+
+    expected_max_col_cnt = len(header_list)
 
     ### Column count check
     if sheet.max_column != expected_max_col_cnt:
@@ -16,11 +21,6 @@ def check_dealer_customer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict)
             'cell': '-',
             'message': f'Column count mismatch. (Found: {sheet.max_column}, Expected: {expected_max_col_cnt})'
         })
-
-    header_list = [
-        'Dealer ID', 'Dealer Name', 'Name',
-        'Sale Value', 'Sale Date', 'Sale Model'
-    ]
 
     ### Header data check
     for idx, header in enumerate(header_list):

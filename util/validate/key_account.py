@@ -6,7 +6,15 @@ if TYPE_CHECKING:
 def check_key_account_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
     error_list = [] # {'level': level, 'sheet': sheet, 'cell': cell, 'message': message}
 
-    expected_max_col_cnt = 10 + len(config['vertical'])
+    header_list = [
+        'ID', 'Account Name', 'Name',
+        'Address', 'Remarks',
+        'Latitude', 'Longtitude',
+        'Value', 'Water Consumption',
+        'Is Customer'
+    ]
+
+    expected_max_col_cnt = len(header_list) + len(config['vertical'])
 
     ### Column count check
     if sheet.max_column != expected_max_col_cnt:
@@ -16,14 +24,6 @@ def check_key_account_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> 
             'cell': '-',
             'message': f'Column count mismatch. (Found: {sheet.max_column}, Expected: {expected_max_col_cnt})'
         })
-
-    header_list = [
-        'ID', 'Account Name', 'Name',
-        'Address', 'Remarks',
-        'Latitude', 'Longtitude',
-        'Value', 'Water Consumption',
-        'Is Customer'
-    ]
 
     ### Header data check
     for idx, header in enumerate(header_list):

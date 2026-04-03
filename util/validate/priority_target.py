@@ -3,14 +3,15 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from openpyxl.workbook.workbook import _WorksheetOrChartsheetLike
 
-def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
+def check_priority_target(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
     error_list = [] # {'level': level, 'sheet': sheet, 'cell': cell, 'message': message}
 
     header_list = [
-        'Area', 'Country', 'Sales Organization',
-        'ID', 'Name', 'Tier', 'Profile', 'Remarks',
-        'Address', 'Latitude', 'Longtitude', 'Projected Revenue',
-        'Actual Revenue'
+        'Area', 'Country', 'Region',
+        'ID', 'Name', 'Address', 'Remarks',
+        'Latitude', 'Longtitude',
+        'Value', 'Water Consumption',
+        'Is Customer'
     ]
 
     expected_max_col_cnt = len(header_list) + len(config['vertical'])
@@ -53,8 +54,6 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
             })
 
     ### Data check
-    tier_list = [obj['name'] for obj in config['tiers']]
-
     for row in sheet.iter_rows(2):
 
         if row[3].value is None:
@@ -65,15 +64,7 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
                 'message': 'Cell empty. Data mapping for this row is not possible.'
             })
 
-        if row[5].value not in tier_list:
-            error_list.append({
-                'level': 'WARNING',
-                'sheet': sheet.title,
-                'cell': cell.coordinate,
-                'message': f'Invalid Tier value. Please select a valid tier from the predefined tier list. (Current: "{cell.value}")'
-            })
-
-        for idx in range(9, 13):
+        for idx in range(7, 11):
             cell = row[idx]
 
             if cell.value is None:
@@ -95,7 +86,7 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
                         'message': f'Non-numeric value detected. This field only accepts numbers. (Current value: "{cell.value}")'
                     })
 
-        for idx in range(len(header_list), len(header_list) + len(vertical_list)):
+        for idx in range((len(header_list) - 1), (len(header_list) + len(vertical_list))):
             cell = row[idx]
 
             if cell.value is not None and not isinstance(cell.value, bool):
