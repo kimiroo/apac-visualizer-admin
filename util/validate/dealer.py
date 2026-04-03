@@ -53,6 +53,8 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
             })
 
     ### Data check
+    tier_list = [obj['name'] for obj in config['tiers']]
+
     for row in sheet.iter_rows(3):
 
         if row[3].value is None:
@@ -61,6 +63,14 @@ def check_dealer_sheet(sheet: _WorksheetOrChartsheetLike, config: dict) -> list:
                 'sheet': sheet.title,
                 'cell': row[3].coordinate,
                 'message': 'Cell empty. Data mapping for this row is not possible.'
+            })
+
+        if row[5].value not in tier_list:
+            error_list.append({
+                'level': 'WARNING',
+                'sheet': sheet.title,
+                'cell': cell.coordinate,
+                'message': f'Invalid Tier value. Please select a valid tier from the predefined tier list. (Current: "{cell.value}")'
             })
 
         for idx in range(9, 13):
