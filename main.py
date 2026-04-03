@@ -509,7 +509,7 @@ st.write('#### GeoJSON')
 
 if st.button(
     'Download latest GeoJSON',
-    key='btn_apply_icon',
+    key='btn_download_geojson',
     use_container_width=True
 ):
     dialog_geojson()
