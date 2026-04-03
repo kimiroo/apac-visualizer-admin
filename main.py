@@ -5,6 +5,7 @@ import shutil
 from datetime import datetime
 
 import streamlit as st
+import openpyxl
 
 from const.file_path import *
 from const.marker_color import MARKER_COLOR_LIST
@@ -12,6 +13,7 @@ from util.gen_template import gen_template
 from util.auto_download import auto_download
 from util.auto_refresh import auto_refresh
 from dialog.geojson import dialog_geojson
+from dialog.validate import dialog_validate
 
 
 ############
@@ -118,7 +120,9 @@ if os.path.exists(PATH_EXCEL):
             key='btn_validate_current',
             use_container_width=True
         ):
-            pass
+            doc = openpyxl.load_workbook(PATH_EXCEL, read_only=False, data_only=True)
+            dialog_validate(doc, config)
+            doc.close()
 
     with col2:
         st.download_button(
@@ -172,7 +176,9 @@ if uploaded_dataset is not None:
             key='btn_validate_new',
             use_container_width=True
         ):
-            pass
+            doc = openpyxl.load_workbook(temp_excel_path, read_only=False, data_only=True)
+            dialog_validate(doc, config)
+            doc.close()
 
     with col2:
         if st.button(
