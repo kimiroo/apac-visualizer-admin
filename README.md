@@ -1,0 +1,25 @@
+# APAC Visualizer Admin Console
+
+Sample docker-compose.yaml file
+```yaml
+services:
+    apac-visualizer:
+        image: ghcr.io/kimiroo/apac-visualizer:v1.0.0
+        container_name: apac-visualizer
+        ports:
+            - "8501:8501"
+        volumes:
+            - "apac_visualizer_data:/data:ro"
+        depends_on:
+            apac-visualizer-admin:
+                condition: service_healthy
+    apac-visualizer-admin:
+        image: ghcr.io/kimiroo/apac-visualizer-admin:v1.0.0
+        container_name: apac-visualizer-admin
+        ports:
+            - "8502:8501"
+        volumes:
+            - "apac_visualizer_data:/data"
+volumes:
+    apac_visualizer_data:
+```
