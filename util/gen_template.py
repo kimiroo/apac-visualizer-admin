@@ -37,9 +37,9 @@ def gen_template(config: dict) -> str:
     sheet.cell(row=3, column=1).value = 'String'
     sheet.cell(row=1, column=1).alignment = alignment_center
 
-    # Dealer
+    # Region
     sheet.merge_cells(start_row=1, start_column=2, end_row=2, end_column=2)
-    sheet.cell(row=1, column=2).value = 'Dealer'
+    sheet.cell(row=1, column=2).value = 'Region'
     sheet.cell(row=3, column=2).value = 'String'
     sheet.cell(row=1, column=2).alignment = alignment_center
 
