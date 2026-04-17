@@ -2,6 +2,7 @@
     "app": {
         "title": "APAC Geo-Coverage Tool"
     },
+    "currency": "USD",
     "source": {
         "sheet": {
             "region": {

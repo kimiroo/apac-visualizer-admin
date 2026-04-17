@@ -203,6 +203,12 @@ input_app_name = st.text_input(
     value=config['app']['title']
 )
 
+input_currency = st.text_input(
+    'Currency',
+    key='input_currency',
+    value=config['currency']
+)
+
 st.write('#### Sheet Names')
 
 input_sheet_name_region = st.text_input(
@@ -400,6 +406,9 @@ with col1:
     ):
         # App Name
         config['app']['title'] = input_app_name
+
+        # Currency
+        config['currency'] = input_currency
 
         # Sheet Names
         config['source']['sheet']['region']['name'] = input_sheet_name_region
