@@ -58,8 +58,8 @@ def gen_template(config: dict) -> str:
         sheet.cell(row=1, column=base_idx).value = vertical
         sheet.cell(row=1, column=base_idx).alignment = alignment_center
 
-        # Plant Count
-        sheet.cell(row=2, column=(base_idx + 0)).value = 'Plant Count'
+        # Project Count
+        sheet.cell(row=2, column=(base_idx + 0)).value = 'Project Count'
         sheet.cell(row=3, column=(base_idx + 0)).value = 'Integer'
         sheet.cell(row=2, column=(base_idx + 0)).alignment = alignment_center
 
@@ -73,8 +73,8 @@ def gen_template(config: dict) -> str:
         sheet.cell(row=3, column=(base_idx + 2)).value = 'Decimal'
         sheet.cell(row=2, column=(base_idx + 2)).alignment = alignment_center
 
-        # Total Market Value
-        sheet.cell(row=2, column=(base_idx + 3)).value = 'Total Market Value'
+        # Total Project Value
+        sheet.cell(row=2, column=(base_idx + 3)).value = 'Total Project Value'
         sheet.cell(row=3, column=(base_idx + 3)).value = 'Decimal'
         sheet.cell(row=2, column=(base_idx + 3)).alignment = alignment_center
 
